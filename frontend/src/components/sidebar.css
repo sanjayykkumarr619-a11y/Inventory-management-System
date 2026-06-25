@@ -1,0 +1,167 @@
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  min-height: 100vh;
+  background-color: var(--color-sidebar-bg);
+  box-shadow: var(--shadow-sidebar);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6) var(--space-4);
+  position: sticky;
+  top: 0;
+}
+
+/* ---- Brand ---- */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-3);
+  margin-bottom: var(--space-8);
+}
+
+.sidebar-brand__mark {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--weight-bold);
+  font-size: var(--text-md);
+  flex-shrink: 0;
+}
+
+.sidebar-brand__name {
+  color: #ffffff;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+/* ---- Nav ---- */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-sidebar-text);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.sidebar-link__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.sidebar-link:hover {
+  background-color: var(--color-sidebar-bg-elevated);
+  color: #ffffff;
+}
+
+.sidebar-link--active {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.sidebar-link--active .sidebar-link__icon {
+  opacity: 1;
+}
+
+/* ---- Footer ---- */
+.sidebar-footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-sidebar-border);
+}
+
+/* Style whatever button LogoutButton renders to match sidebar-link,
+   without touching LogoutButton.jsx itself (its onClick/logic is untouched). */
+.sidebar-footer button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: 10px var(--space-3);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--color-sidebar-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.sidebar-footer button:hover {
+  background-color: var(--color-sidebar-bg-elevated);
+  color: #ffffff;
+}
+
+.sidebar-footer button::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/><polyline points='16 17 21 12 16 7'/><line x1='21' y1='12' x2='9' y2='12'/></svg>") center / contain no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/><polyline points='16 17 21 12 16 7'/><line x1='21' y1='12' x2='9' y2='12'/></svg>") center / contain no-repeat;
+  opacity: 0.85;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .sidebar-brand {
+    margin-bottom: 0;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    gap: var(--space-1);
+    overflow-x: auto;
+  }
+
+  .sidebar-link__label {
+    display: none;
+  }
+
+  .sidebar-footer {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .sidebar-footer button {
+    width: auto;
+    padding: 8px var(--space-3);
+  }
+}

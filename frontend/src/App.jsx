@@ -12,6 +12,8 @@ import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 
+import "./styles/design-system.css";
+
 function App() {
   return (
     <BrowserRouter>
@@ -29,44 +31,16 @@ function App() {
           path="*"
           element={
             <ProtectedRoute>
-              <div
-                style={{
-                  display: "flex",
-                }}
-              >
+              <div className="app-shell">
                 <Sidebar />
 
-                <div
-                  style={{
-                    flex: 1,
-                    padding: "20px",
-                  }}
-                >
+                <div className="main-content">
                   <Routes>
-                    <Route
-                      path="/"
-                      element={<DashboardPage />}
-                    />
-
-                    <Route
-                      path="/categories"
-                      element={<CategoriesPage />}
-                    />
-
-                    <Route
-                      path="/products"
-                      element={<ProductsPage />}
-                    />
-
-                    <Route
-                      path="/variants"
-                      element={<VariantsPage />}
-                    />
-
-                    <Route
-                      path="/inventory"
-                      element={<InventoryPage />}
-                    />
+                    <Route path="/" element={<DashboardPage />} />
+                    <Route path="/categories" element={<CategoriesPage />} />
+                    <Route path="/products" element={<ProductsPage />} />
+                    <Route path="/variants" element={<VariantsPage />} />
+                    <Route path="/inventory" element={<InventoryPage />} />
                   </Routes>
                 </div>
               </div>

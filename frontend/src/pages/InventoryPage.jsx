@@ -6,19 +6,15 @@ import StockOutForm from "../components/StockOutForm";
 import TransactionTable from "../components/TransactionTable";
 
 import { getAdmin } from "../utils/auth";
+import "./InventoryPage.css";
 
 function InventoryPage() {
-  const [variants, setVariants] =
-    useState([]);
-
-  const [transactions, setTransactions] =
-    useState([]);
+  const [variants, setVariants] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
   const fetchVariants = async () => {
     try {
-      const response = await api.get(
-        "/variants"
-      );
+      const response = await api.get("/variants");
 
       setVariants(response.data.data);
     } catch (error) {
@@ -28,13 +24,9 @@ function InventoryPage() {
 
   const fetchHistory = async () => {
     try {
-      const response = await api.get(
-        "/stock/history"
-      );
+      const response = await api.get("/stock/history");
 
-      setTransactions(
-        response.data.data
-      );
+      setTransactions(response.data.data);
     } catch (error) {
       console.error(error);
     }
@@ -45,85 +37,64 @@ function InventoryPage() {
     fetchHistory();
   }, []);
 
-  const handleStockIn = async (
-    data
-  ) => {
+  const handleStockIn = async (data) => {
     try {
       const admin = getAdmin();
 
       await api.post("/stock/in", {
         ...data,
         reason: "RESTOCK",
-        performedBy:
-          admin._id,
+        performedBy: admin._id,
       });
 
       fetchVariants();
       fetchHistory();
 
-      alert(
-        "Stock added successfully"
-      );
+      alert("Stock added successfully");
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleStockOut = async (
-    data
-  ) => {
+  const handleStockOut = async (data) => {
     try {
       const admin = getAdmin();
 
       await api.post("/stock/out", {
         ...data,
         reason: "SALE",
-        performedBy:
-          admin._id,
+        performedBy: admin._id,
       });
 
       fetchVariants();
       fetchHistory();
 
-      alert(
-        "Stock removed successfully"
-      );
+      alert("Stock removed successfully");
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div>
-      <h1>Inventory</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <div>
+          <h1 className="page-header__title">Inventory</h1>
+          <p className="page-header__subtitle">
+            Record stock movements and review transaction history.
+          </p>
+        </div>
+      </div>
 
-      <StockInForm
-        variants={variants}
-        onSubmit={
-          handleStockIn
-        }
-      />
+      <div className="inventory-forms-grid section">
+        <StockInForm variants={variants} onSubmit={handleStockIn} />
+        <StockOutForm variants={variants} onSubmit={handleStockOut} />
+      </div>
 
-      <br />
-
-      <StockOutForm
-        variants={variants}
-        onSubmit={
-          handleStockOut
-        }
-      />
-
-      <br />
-
-      <h2>
-        Transaction History
-      </h2>
-
-      <TransactionTable
-        transactions={
-          transactions
-        }
-      />
+      <div className="card card--padded inventory-page-history">
+        <h2 className="section-title">Transaction History</h2>
+        <TransactionTable transactions={transactions} />
+      </div>
     </div>
   );
 }

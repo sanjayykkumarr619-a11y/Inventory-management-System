@@ -1,0 +1,23 @@
+.dashboard-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.dashboard-split__panel {
+  min-width: 0;
+  padding: var(--space-6);
+}
+
+.dashboard-split__panel .table-wrapper {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-split {
+    grid-template-columns: 1fr;
+  }
+}

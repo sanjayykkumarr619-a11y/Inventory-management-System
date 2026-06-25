@@ -1,0 +1,20 @@
+.inventory-forms-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+/* Avoid a "card inside a card" double border/shadow since
+   TransactionTable already wraps itself in .table-wrapper */
+.inventory-page-history .table-wrapper {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 1024px) {
+  .inventory-forms-grid {
+    grid-template-columns: 1fr;
+  }
+}

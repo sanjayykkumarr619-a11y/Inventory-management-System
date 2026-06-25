@@ -4,6 +4,7 @@ import StatCard from "../components/StatCard";
 import LowStockTable from "../components/LowStockTable";
 import RecentTransactionsTable from "../components/RecentTransactionsTable";
 import InventoryValueCard from "../components/InventoryValueCard";
+import "./DashboardPage.css";
 
 function DashboardPage() {
   const [stats, setStats] = useState(null);
@@ -41,51 +42,40 @@ function DashboardPage() {
   }, []);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Inventory Dashboard</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <div>
+          <h1 className="page-header__title">Inventory Dashboard</h1>
+          <p className="page-header__subtitle">
+            A snapshot of your stock, catalog, and recent activity.
+          </p>
+        </div>
+      </div>
 
       {stats && (
-        <div
-          style={{
-            display: "flex",
-            gap: "20px",
-            flexWrap: "wrap",
-            marginBottom: "20px",
-          }}
-        >
-          <StatCard
-            title="Categories"
-            value={stats.totalCategories}
-          />
-
-          <StatCard
-            title="Products"
-            value={stats.totalProducts}
-          />
-
-          <StatCard
-            title="Variants"
-            value={stats.totalVariants}
-          />
-
-          <StatCard
-            title="Transactions"
-            value={stats.totalTransactions}
-          />
+        <div className="stats-grid section">
+          <StatCard title="Categories" value={stats.totalCategories} />
+          <StatCard title="Products" value={stats.totalProducts} />
+          <StatCard title="Variants" value={stats.totalVariants} />
+          <StatCard title="Transactions" value={stats.totalTransactions} />
         </div>
       )}
 
-      <InventoryValueCard value={inventoryValue} />
+      <div className="section">
+        <InventoryValueCard value={inventoryValue} />
+      </div>
 
-      <br />
+      <div className="dashboard-split section">
+        <div className="card dashboard-split__panel">
+          <h2 className="section-title">Low Stock Items</h2>
+          <LowStockTable items={lowStockItems} />
+        </div>
 
-      <LowStockTable items={lowStockItems} />
-
-      <br />
-
-      <RecentTransactionsTable
-        transactions={transactions}
-      />
+        <div className="card dashboard-split__panel">
+          <h2 className="section-title">Recent Transactions</h2>
+          <RecentTransactionsTable transactions={transactions} />
+        </div>
+      </div>
     </div>
   );
 }

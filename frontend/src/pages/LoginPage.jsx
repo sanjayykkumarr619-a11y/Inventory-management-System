@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import "./LoginPage.css";
 
 function LoginPage() {
-  const [email, setEmail] =
-    useState("");
-
-  const [password, setPassword] =
-    useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
@@ -15,24 +13,16 @@ function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await api.post(
-        "/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+      });
 
-      localStorage.setItem(
-        "token",
-        response.data.data.token
-      );
+      localStorage.setItem("token", response.data.data.token);
 
       localStorage.setItem(
         "admin",
-        JSON.stringify(
-          response.data.data.admin
-        )
+        JSON.stringify(response.data.data.admin)
       );
 
       alert("Login Successful");
@@ -41,46 +31,59 @@ function LoginPage() {
     } catch (error) {
       console.error(error);
 
-      alert(
-        error.response?.data?.message ||
-          "Login Failed"
-      );
+      alert(error.response?.data?.message || "Login Failed");
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="login-page">
+      <div className="login-card">
+        <div className="login-brand">
+          <span className="login-brand__mark">S</span>
+          <span className="login-brand__name">StockFlow</span>
+        </div>
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-        />
+        <div className="login-card__header">
+          <h1 className="login-card__title">Welcome back</h1>
+          <p className="login-card__subtitle">
+            Sign in to manage your inventory.
+          </p>
+        </div>
 
-        <br />
-        <br />
+        <form onSubmit={handleLogin} className="login-form">
+          <div className="form-group">
+            <label htmlFor="login-email" className="form-label">
+              Email
+            </label>
+            <input
+              id="login-email"
+              type="email"
+              placeholder="you@company.com"
+              className="form-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-        />
+          <div className="form-group">
+            <label htmlFor="login-password" className="form-label">
+              Password
+            </label>
+            <input
+              id="login-password"
+              type="password"
+              placeholder="••••••••"
+              className="form-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-        <br />
-        <br />
-
-        <button type="submit">
-          Login
-        </button>
-      </form>
+          <button type="submit" className="btn btn-primary login-form__submit">
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

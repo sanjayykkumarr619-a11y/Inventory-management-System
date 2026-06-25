@@ -1,11 +1,7 @@
-function ProductTable({
-  products,
-  onEdit,
-  onDelete,
-}) {
+function ProductTable({ products, onEdit, onDelete }) {
   return (
-    <div>
-      <table border="1" cellPadding="10">
+    <div className="table-wrapper">
+      <table className="table-modern">
         <thead>
           <tr>
             <th>Name</th>
@@ -22,40 +18,51 @@ function ProductTable({
 
               <td>{product.brand}</td>
 
-              <td>
-                {product.categoryId?.name}
-              </td>
+              <td>{product.categoryId?.name}</td>
 
               <td>
-                <button
-                  onClick={() =>
-                    onEdit(product)
-                  }
-                >
-                  Edit
-                </button>
+                <div className="action-buttons">
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => onEdit(product)}
+                  >
+                    Edit
+                  </button>
 
-                {" "}
-
-                <button
-                  onClick={() => {
-                    const confirmed =
-                      window.confirm(
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => {
+                      const confirmed = window.confirm(
                         `Delete "${product.name}"?`
                       );
 
-                    if (confirmed) {
-                      onDelete(product._id);
-                    }
-                  }}
-                >
-                  Delete
-                </button>
+                      if (confirmed) {
+                        onDelete(product._id);
+                      }
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {products.length === 0 && (
+        <div className="table-empty-state">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M21 8 12 3 3 8m18 0-9 5-9-5m18 0v8l-9 5-9-5V8"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <p>No products yet</p>
+        </div>
+      )}
     </div>
   );
 }

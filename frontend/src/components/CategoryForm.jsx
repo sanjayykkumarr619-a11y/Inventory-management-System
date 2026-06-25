@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 
-function CategoryForm({
-  onAdd,
-  editingCategory,
-  onUpdate,
-}) {
+function CategoryForm({ onAdd, editingCategory, onUpdate }) {
   const [name, setName] = useState("");
 
   useEffect(() => {
@@ -26,21 +22,26 @@ function CategoryForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Category Name"
-        value={name}
-        onChange={(e) =>
-          setName(e.target.value)
-        }
-      />
+    <form onSubmit={handleSubmit} className="form-card">
+      <div className="form-group">
+        <label htmlFor="category-name" className="form-label">
+          Category Name
+        </label>
+        <input
+          id="category-name"
+          type="text"
+          placeholder="e.g. Footwear"
+          className="form-input"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
 
-      <button type="submit">
-        {editingCategory
-          ? "Update Category"
-          : "Add Category"}
-      </button>
+      <div className="form-actions">
+        <button type="submit" className="btn btn-primary">
+          {editingCategory ? "Update Category" : "Add Category"}
+        </button>
+      </div>
     </form>
   );
 }

@@ -6,14 +6,11 @@ import VariantForm from "../components/VariantForm";
 function VariantsPage() {
   const [variants, setVariants] = useState([]);
   const [products, setProducts] = useState([]);
-  const [editingVariant, setEditingVariant] =
-    useState(null);
+  const [editingVariant, setEditingVariant] = useState(null);
 
   const fetchVariants = async () => {
     try {
-      const response = await api.get(
-        "/variants"
-      );
+      const response = await api.get("/variants");
 
       setVariants(response.data.data);
     } catch (error) {
@@ -23,9 +20,7 @@ function VariantsPage() {
 
   const fetchProducts = async () => {
     try {
-      const response = await api.get(
-        "/products"
-      );
+      const response = await api.get("/products");
 
       setProducts(response.data.data);
     } catch (error) {
@@ -38,14 +33,9 @@ function VariantsPage() {
     fetchProducts();
   }, []);
 
-  const handleAddVariant = async (
-    variantData
-  ) => {
+  const handleAddVariant = async (variantData) => {
     try {
-      await api.post(
-        "/variants",
-        variantData
-      );
+      await api.post("/variants", variantData);
 
       fetchVariants();
     } catch (error) {
@@ -53,15 +43,9 @@ function VariantsPage() {
     }
   };
 
-  const handleUpdateVariant = async (
-    id,
-    variantData
-  ) => {
+  const handleUpdateVariant = async (id, variantData) => {
     try {
-      await api.put(
-        `/variants/${id}`,
-        variantData
-      );
+      await api.put(`/variants/${id}`, variantData);
 
       setEditingVariant(null);
 
@@ -71,13 +55,9 @@ function VariantsPage() {
     }
   };
 
-  const handleDeleteVariant = async (
-    id
-  ) => {
+  const handleDeleteVariant = async (id) => {
     try {
-      await api.delete(
-        `/variants/${id}`
-      );
+      await api.delete(`/variants/${id}`);
 
       fetchVariants();
     } catch (error) {
@@ -86,28 +66,29 @@ function VariantsPage() {
   };
 
   return (
-    <div>
-      <h1>Variants</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <div>
+          <h1 className="page-header__title">Variants</h1>
+          <p className="page-header__subtitle">
+            Manage SKUs, pricing, and stock per product variant.
+          </p>
+        </div>
+      </div>
 
-      <VariantForm
-        products={products}
-        editingVariant={
-          editingVariant
-        }
-        onAdd={handleAddVariant}
-        onUpdate={
-          handleUpdateVariant
-        }
-      />
-
-      <br />
+      <div className="section">
+        <VariantForm
+          products={products}
+          editingVariant={editingVariant}
+          onAdd={handleAddVariant}
+          onUpdate={handleUpdateVariant}
+        />
+      </div>
 
       <VariantTable
         variants={variants}
         onEdit={setEditingVariant}
-        onDelete={
-          handleDeleteVariant
-        }
+        onDelete={handleDeleteVariant}
       />
     </div>
   );

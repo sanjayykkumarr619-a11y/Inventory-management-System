@@ -5,8 +5,7 @@ import CategoryForm from "../components/CategoryForm";
 
 function CategoriesPage() {
   const [categories, setCategories] = useState([]);
-  const [editingCategory, setEditingCategory] =
-    useState(null);
+  const [editingCategory, setEditingCategory] = useState(null);
 
   const fetchCategories = async () => {
     try {
@@ -33,10 +32,7 @@ function CategoriesPage() {
     }
   };
 
-  const handleUpdateCategory = async (
-    id,
-    name
-  ) => {
+  const handleUpdateCategory = async (id, name) => {
     try {
       await api.put(`/categories/${id}`, {
         name,
@@ -61,16 +57,23 @@ function CategoriesPage() {
   };
 
   return (
-    <div>
-      <h1>Categories</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <div>
+          <h1 className="page-header__title">Categories</h1>
+          <p className="page-header__subtitle">
+            Organize your products into categories.
+          </p>
+        </div>
+      </div>
 
-      <CategoryForm
-        onAdd={handleAddCategory}
-        editingCategory={editingCategory}
-        onUpdate={handleUpdateCategory}
-      />
-
-      <br />
+      <div className="section">
+        <CategoryForm
+          onAdd={handleAddCategory}
+          editingCategory={editingCategory}
+          onUpdate={handleUpdateCategory}
+        />
+      </div>
 
       <CategoryTable
         categories={categories}

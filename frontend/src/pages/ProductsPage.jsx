@@ -6,14 +6,11 @@ import ProductForm from "../components/ProductForm";
 function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [editingProduct, setEditingProduct] =
-    useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
 
   const fetchProducts = async () => {
     try {
-      const response = await api.get(
-        "/products"
-      );
+      const response = await api.get("/products");
 
       setProducts(response.data.data);
     } catch (error) {
@@ -23,9 +20,7 @@ function ProductsPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await api.get(
-        "/categories"
-      );
+      const response = await api.get("/categories");
 
       setCategories(response.data.data);
     } catch (error) {
@@ -38,14 +33,9 @@ function ProductsPage() {
     fetchCategories();
   }, []);
 
-  const handleAddProduct = async (
-    productData
-  ) => {
+  const handleAddProduct = async (productData) => {
     try {
-      await api.post(
-        "/products",
-        productData
-      );
+      await api.post("/products", productData);
 
       fetchProducts();
     } catch (error) {
@@ -53,15 +43,9 @@ function ProductsPage() {
     }
   };
 
-  const handleUpdateProduct = async (
-    id,
-    productData
-  ) => {
+  const handleUpdateProduct = async (id, productData) => {
     try {
-      await api.put(
-        `/products/${id}`,
-        productData
-      );
+      await api.put(`/products/${id}`, productData);
 
       setEditingProduct(null);
 
@@ -71,13 +55,9 @@ function ProductsPage() {
     }
   };
 
-  const handleDeleteProduct = async (
-    id
-  ) => {
+  const handleDeleteProduct = async (id) => {
     try {
-      await api.delete(
-        `/products/${id}`
-      );
+      await api.delete(`/products/${id}`);
 
       fetchProducts();
     } catch (error) {
@@ -86,28 +66,29 @@ function ProductsPage() {
   };
 
   return (
-    <div>
-      <h1>Products</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <div>
+          <h1 className="page-header__title">Products</h1>
+          <p className="page-header__subtitle">
+            Manage all products in your inventory.
+          </p>
+        </div>
+      </div>
 
-      <ProductForm
-        onAdd={handleAddProduct}
-        onUpdate={
-          handleUpdateProduct
-        }
-        editingProduct={
-          editingProduct
-        }
-        categories={categories}
-      />
-
-      <br />
+      <div className="section">
+        <ProductForm
+          onAdd={handleAddProduct}
+          onUpdate={handleUpdateProduct}
+          editingProduct={editingProduct}
+          categories={categories}
+        />
+      </div>
 
       <ProductTable
         products={products}
         onEdit={setEditingProduct}
-        onDelete={
-          handleDeleteProduct
-        }
+        onDelete={handleDeleteProduct}
       />
     </div>
   );
