@@ -39,6 +39,14 @@ const STAT_STYLES = {
       </svg>
     ),
   },
+  "Current Stock": {
+    accent: "green",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M20 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1ZM1 4h22M8 4V2m8 2V2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
 };
 
 const DEFAULT_STYLE = {
@@ -50,18 +58,38 @@ const DEFAULT_STYLE = {
   ),
 };
 
-function StatCard({ title, value }) {
+function StatCard({ title, value, suffix, onClick }) {
   const style = STAT_STYLES[title] || DEFAULT_STYLE;
   const displayValue =
     typeof value === "number" ? value.toLocaleString() : value ?? "—";
 
+  const clickable = typeof onClick === "function";
+
   return (
-    <div className="stat-card card">
+    <div
+      className={`stat-card card${clickable ? " stat-card--clickable" : ""}`}
+      onClick={onClick}
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={
+        clickable
+          ? (e) => (e.key === "Enter" || e.key === " ") && onClick()
+          : undefined
+      }
+    >
       <div className={`stat-card__icon stat-card__icon--${style.accent}`}>
         {style.icon}
       </div>
       <p className="stat-card__title">{title}</p>
-      <h2 className="stat-card__value">{displayValue}</h2>
+      <h2 className="stat-card__value">
+        {displayValue}
+        {suffix && (
+          <span className="stat-card__suffix"> {suffix}</span>
+        )}
+      </h2>
+      {clickable && (
+        <span className="stat-card__cta">View details →</span>
+      )}
     </div>
   );
 }

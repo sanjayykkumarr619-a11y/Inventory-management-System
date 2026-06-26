@@ -3,7 +3,6 @@ import api from "../api/axios";
 
 import LoadingSpinner from "../components/LoadingSpinner";
 import StockInForm from "../components/StockInForm";
-import StockOutForm from "../components/StockOutForm";
 import TransactionTable from "../components/TransactionTable";
 import { useToast } from "../components/toastContext";
 
@@ -24,7 +23,7 @@ const transactionMatches = (transaction, query) =>
     .filter(Boolean)
     .some((value) => value.toLowerCase().includes(query));
 
-function InventoryPage() {
+function StockInPage() {
   const [variants, setVariants] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -41,10 +40,13 @@ function InventoryPage() {
       ]);
 
       setVariants(variantResponse.data.data);
-      setTransactions(historyResponse.data.data);
+      // Only keep STOCK_IN transactions
+      setTransactions(
+        historyResponse.data.data.filter((t) => t.type === "STOCK_IN")
+      );
     } catch (error) {
       console.error(error);
-      showToast("Unable to load inventory data", "error");
+      showToast("Unable to load stock in data", "error");
     } finally {
       setFetching(false);
     }
@@ -57,25 +59,22 @@ function InventoryPage() {
   const filteredTransactions = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
     if (!query) return transactions;
-
     return transactions.filter((transaction) =>
       transactionMatches(transaction, query)
     );
   }, [transactions, searchTerm]);
 
-  const stockInTransactions = filteredTransactions.filter(
-    (transaction) => transaction.type === "STOCK_IN"
-  );
-  const stockOutTransactions = filteredTransactions.filter(
-    (transaction) => transaction.type === "STOCK_OUT"
-  );
-
-  const runStockMutation = async (request, successMessage) => {
+  const handleStockIn = async (data) => {
+    const admin = getAdmin();
     setSaving(true);
     try {
-      await request();
+      await api.post("/stock/in", {
+        ...data,
+        reason: "RESTOCK",
+        performedBy: admin._id,
+      });
       await fetchData();
-      showToast(successMessage);
+      showToast("Stock Added");
     } catch (error) {
       console.error(error);
       showToast(error?.response?.data?.message || "Stock update failed", "error");
@@ -84,44 +83,16 @@ function InventoryPage() {
     }
   };
 
-  const handleStockIn = async (data) => {
-    const admin = getAdmin();
-
-    runStockMutation(
-      () =>
-        api.post("/stock/in", {
-          ...data,
-          reason: "RESTOCK",
-          performedBy: admin._id,
-        }),
-      "Stock Added"
-    );
-  };
-
-  const handleStockOut = async (data) => {
-    const admin = getAdmin();
-
-    runStockMutation(
-      () =>
-        api.post("/stock/out", {
-          ...data,
-          reason: "SALE",
-          performedBy: admin._id,
-        }),
-      "Stock Removed"
-    );
-  };
-
   const handleExport = () => {
     exportCsv(
-      "transactions.csv",
+      "stock-in-history.csv",
       [
-        { label: "SKU", value: (transaction) => transaction.variantId?.sku },
-        { label: "Type", value: (transaction) => transaction.type },
-        { label: "Quantity", value: (transaction) => transaction.quantity },
-        { label: "Reason", value: (transaction) => transaction.reason },
-        { label: "Notes", value: (transaction) => transaction.notes },
-        { label: "Date", value: (transaction) => transaction.createdAt },
+        { label: "SKU", value: (t) => t.variantId?.sku },
+        { label: "Type", value: (t) => t.type },
+        { label: "Quantity", value: (t) => t.quantity },
+        { label: "Reason", value: (t) => t.reason },
+        { label: "Notes", value: (t) => t.notes },
+        { label: "Date", value: (t) => t.createdAt },
       ],
       filteredTransactions
     );
@@ -131,9 +102,9 @@ function InventoryPage() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-header__title">Inventory</h1>
+          <h1 className="page-header__title">Stock In</h1>
           <p className="page-header__subtitle">
-            Record stock movements and review stock in/out history.
+            Record incoming stock and review stock in history.
           </p>
         </div>
         <button type="button" className="btn btn-secondary" onClick={handleExport}>
@@ -143,40 +114,32 @@ function InventoryPage() {
 
       {fetching ? (
         <div className="card card--padded section">
-          <LoadingSpinner label="Loading inventory" />
+          <LoadingSpinner label="Loading stock in data" />
         </div>
       ) : (
         <>
-          <div className="inventory-forms-grid section">
+          <div className="section">
             <StockInForm variants={variants} onSubmit={handleStockIn} loading={saving} />
-            <StockOutForm variants={variants} onSubmit={handleStockOut} loading={saving} />
           </div>
 
           <div className="toolbar section">
             <input
               className="form-input toolbar__search"
               type="search"
-              placeholder="Search transactions..."
+              placeholder="Search stock in transactions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="inventory-history-grid">
-            <section className="card card--padded inventory-page-history">
-              <h2 className="section-title">Stock In History</h2>
-              <TransactionTable transactions={stockInTransactions} />
-            </section>
-
-            <section className="card card--padded inventory-page-history">
-              <h2 className="section-title">Stock Out History</h2>
-              <TransactionTable transactions={stockOutTransactions} />
-            </section>
-          </div>
+          <section className="card card--padded inventory-page-history section">
+            <h2 className="section-title">Stock In History</h2>
+            <TransactionTable transactions={filteredTransactions} />
+          </section>
         </>
       )}
     </div>
   );
 }
 
-export default InventoryPage;
+export default StockInPage;

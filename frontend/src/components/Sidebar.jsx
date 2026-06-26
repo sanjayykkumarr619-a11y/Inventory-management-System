@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
-import "./Sidebar.css";
+import "./sidebar.css";
 
 /* Inline SVG icons — no extra dependency required.
    Swap these for an icon library later if you add one; markup-only change. */
@@ -28,9 +28,14 @@ const icons = {
       <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
     </svg>
   ),
-  inventory: (
+  stockIn: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M12 4v16m0 0-6-6m6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+  stockOut: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path d="M12 20V4m0 0 6 6M12 4l-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
 };
@@ -40,7 +45,8 @@ const navItems = [
   { to: "/categories", label: "Categories", icon: icons.categories },
   { to: "/products", label: "Products", icon: icons.products },
   { to: "/variants", label: "Variants", icon: icons.variants },
-  { to: "/inventory", label: "Inventory", icon: icons.inventory },
+  { to: "/stock-in", label: "Stock In", icon: icons.stockIn },
+  { to: "/stock-out", label: "Stock Out", icon: icons.stockOut },
 ];
 
 function Sidebar() {

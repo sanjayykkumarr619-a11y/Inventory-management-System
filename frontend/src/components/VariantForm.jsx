@@ -1,7 +1,15 @@
 import { useState, useEffect } from "react";
 
-function VariantForm({ products, editingVariant, onAdd, onUpdate }) {
-  const [productId, setProductId] = useState("");
+function VariantForm({
+  products,
+  editingVariant,
+  onAdd,
+  onUpdate,
+  fixedProductId,
+  onCancel,
+  loading,
+}) {
+  const [productId, setProductId] = useState(fixedProductId || "");
   const [sku, setSku] = useState("");
   const [color, setColor] = useState("");
   const [size, setSize] = useState("M");
@@ -10,30 +18,33 @@ function VariantForm({ products, editingVariant, onAdd, onUpdate }) {
 
   useEffect(() => {
     if (editingVariant) {
-      setProductId(
-        editingVariant.productId?._id || editingVariant.productId
-      );
-
+      setProductId(editingVariant.productId?._id || editingVariant.productId);
       setSku(editingVariant.sku);
       setColor(editingVariant.color);
       setSize(editingVariant.size);
       setPrice(editingVariant.price);
       setCurrentStock(editingVariant.currentStock);
+    } else if (fixedProductId) {
+      setProductId(fixedProductId);
     }
-  }, [editingVariant]);
+  }, [editingVariant, fixedProductId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const variantData = {
-      productId,
-      sku,
-      color,
+      productId: fixedProductId || productId,
+      sku: sku.trim(),
+      color: color.trim(),
       size,
       price: Number(price),
       currentStock: Number(currentStock),
       lowStockThreshold: 5,
     };
+
+    if (!variantData.productId || !variantData.sku || !variantData.color) {
+      return;
+    }
 
     if (editingVariant) {
       onUpdate(editingVariant._id, variantData);
@@ -41,7 +52,7 @@ function VariantForm({ products, editingVariant, onAdd, onUpdate }) {
       onAdd(variantData);
     }
 
-    setProductId("");
+    setProductId(fixedProductId || "");
     setSku("");
     setColor("");
     setSize("M");
@@ -52,25 +63,27 @@ function VariantForm({ products, editingVariant, onAdd, onUpdate }) {
   return (
     <form onSubmit={handleSubmit} className="form-card">
       <div className="form-grid">
-        <div className="form-group form-group--full">
-          <label htmlFor="variant-product" className="form-label">
-            Product
-          </label>
-          <select
-            id="variant-product"
-            className="form-select"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-          >
-            <option value="">Select Product</option>
+        {!fixedProductId && (
+          <div className="form-group form-group--full">
+            <label htmlFor="variant-product" className="form-label">
+              Product
+            </label>
+            <select
+              id="variant-product"
+              className="form-select"
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+            >
+              <option value="">Select Product</option>
 
-            {products.map((product) => (
-              <option key={product._id} value={product._id}>
-                {product.name}
-              </option>
-            ))}
-          </select>
-        </div>
+              {products.map((product) => (
+                <option key={product._id} value={product._id}>
+                  {product.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="form-group">
           <label htmlFor="variant-sku" className="form-label">
@@ -147,8 +160,22 @@ function VariantForm({ products, editingVariant, onAdd, onUpdate }) {
       </div>
 
       <div className="form-actions">
-        <button type="submit" className="btn btn-primary">
-          {editingVariant ? "Update Variant" : "Add Variant"}
+        {editingVariant && (
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={onCancel}
+            disabled={loading}
+          >
+            Cancel
+          </button>
+        )}
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading
+            ? "Saving..."
+            : editingVariant
+              ? "Update Variant"
+              : "Add Variant"}
         </button>
       </div>
     </form>

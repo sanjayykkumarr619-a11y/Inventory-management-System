@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function CategoryForm({ onAdd, editingCategory, onUpdate }) {
+function CategoryForm({ onAdd, editingCategory, onUpdate, onCancel, loading }) {
   const [name, setName] = useState("");
 
   useEffect(() => {
@@ -12,10 +12,12 @@ function CategoryForm({ onAdd, editingCategory, onUpdate }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!name.trim()) return;
+
     if (editingCategory) {
-      onUpdate(editingCategory._id, name);
+      onUpdate(editingCategory._id, name.trim());
     } else {
-      onAdd(name);
+      onAdd(name.trim());
     }
 
     setName("");
@@ -38,8 +40,17 @@ function CategoryForm({ onAdd, editingCategory, onUpdate }) {
       </div>
 
       <div className="form-actions">
-        <button type="submit" className="btn btn-primary">
-          {editingCategory ? "Update Category" : "Add Category"}
+        {editingCategory && (
+          <button type="button" className="btn btn-secondary" onClick={onCancel} disabled={loading}>
+            Cancel
+          </button>
+        )}
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading
+            ? "Saving..."
+            : editingCategory
+              ? "Update Category"
+              : "Add Category"}
         </button>
       </div>
     </form>

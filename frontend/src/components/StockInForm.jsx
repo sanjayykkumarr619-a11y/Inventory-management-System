@@ -1,12 +1,14 @@
 import { useState } from "react";
 
-function StockInForm({ variants, onSubmit }) {
+function StockInForm({ variants, onSubmit, loading }) {
   const [variantId, setVariantId] = useState("");
   const [quantity, setQuantity] = useState("");
   const [notes, setNotes] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!variantId || Number(quantity) <= 0) return;
 
     onSubmit({
       variantId,
@@ -71,8 +73,8 @@ function StockInForm({ variants, onSubmit }) {
       </div>
 
       <div className="form-actions">
-        <button type="submit" className="btn btn-primary">
-          Add Stock
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? "Adding..." : "Add Stock"}
         </button>
       </div>
     </form>

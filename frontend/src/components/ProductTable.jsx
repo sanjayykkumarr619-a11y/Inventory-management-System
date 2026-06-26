@@ -1,4 +1,6 @@
-function ProductTable({ products, onEdit, onDelete }) {
+function ProductTable({ products, onEdit, onDelete, showCategory = true }) {
+  const showActions = Boolean(onEdit || onDelete);
+
   return (
     <div className="table-wrapper">
       <table className="table-modern">
@@ -6,8 +8,8 @@ function ProductTable({ products, onEdit, onDelete }) {
           <tr>
             <th>Name</th>
             <th>Brand</th>
-            <th>Category</th>
-            <th>Action</th>
+            {showCategory && <th>Category</th>}
+            {showActions && <th>Action</th>}
           </tr>
         </thead>
 
@@ -18,33 +20,31 @@ function ProductTable({ products, onEdit, onDelete }) {
 
               <td>{product.brand}</td>
 
-              <td>{product.categoryId?.name}</td>
+              {showCategory && <td>{product.categoryId?.name}</td>}
 
-              <td>
-                <div className="action-buttons">
-                  <button
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => onEdit(product)}
-                  >
-                    Edit
-                  </button>
+              {showActions && (
+                <td>
+                  <div className="action-buttons">
+                    {onEdit && (
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => onEdit(product)}
+                      >
+                        Edit
+                      </button>
+                    )}
 
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => {
-                      const confirmed = window.confirm(
-                        `Delete "${product.name}"?`
-                      );
-
-                      if (confirmed) {
-                        onDelete(product._id);
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
+                    {onDelete && (
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => onDelete(product)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

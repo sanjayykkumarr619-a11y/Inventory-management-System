@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import StatCard from "../components/StatCard";
 import LowStockTable from "../components/LowStockTable";
@@ -7,10 +8,12 @@ import InventoryValueCard from "../components/InventoryValueCard";
 import "./DashboardPage.css";
 
 function DashboardPage() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [lowStockItems, setLowStockItems] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [inventoryValue, setInventoryValue] = useState(0);
+  const [totalCurrentStock, setTotalCurrentStock] = useState(null);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -20,11 +23,13 @@ function DashboardPage() {
           lowStockResponse,
           transactionsResponse,
           inventoryValueResponse,
+          variantsResponse,
         ] = await Promise.all([
           api.get("/dashboard/stats"),
           api.get("/dashboard/low-stock"),
           api.get("/dashboard/recent-transactions"),
           api.get("/dashboard/inventory-value"),
+          api.get("/variants"),
         ]);
 
         setStats(statsResponse.data.data);
@@ -33,6 +38,14 @@ function DashboardPage() {
         setInventoryValue(
           inventoryValueResponse.data.data.totalInventoryValue
         );
+
+        // Sum all variant currentStock values on the frontend
+        const variants = variantsResponse.data.data;
+        const stockSum = variants.reduce(
+          (sum, v) => sum + (v.currentStock || 0),
+          0
+        );
+        setTotalCurrentStock(stockSum);
       } catch (error) {
         console.error(error);
       }
@@ -57,7 +70,13 @@ function DashboardPage() {
           <StatCard title="Categories" value={stats.totalCategories} />
           <StatCard title="Products" value={stats.totalProducts} />
           <StatCard title="Variants" value={stats.totalVariants} />
-          <StatCard title="Transactions" value={stats.totalTransactions} />
+          {/* Current Stock replaces the old Transactions card */}
+          <StatCard
+            title="Current Stock"
+            value={totalCurrentStock}
+            suffix="Units"
+            onClick={() => navigate("/current-stock")}
+          />
         </div>
       )}
 

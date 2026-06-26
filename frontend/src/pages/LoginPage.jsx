@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { useToast } from "../components/toastContext";
 import "./LoginPage.css";
 
 function LoginPage() {
@@ -8,6 +9,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,13 +27,13 @@ function LoginPage() {
         JSON.stringify(response.data.data.admin)
       );
 
-      alert("Login Successful");
+      showToast("Login Successful");
 
       navigate("/");
     } catch (error) {
       console.error(error);
 
-      alert(error.response?.data?.message || "Login Failed");
+      showToast(error.response?.data?.message || "Login Failed", "error");
     }
   };
 

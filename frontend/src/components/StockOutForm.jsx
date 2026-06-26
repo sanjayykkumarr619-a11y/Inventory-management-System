@@ -1,12 +1,14 @@
 import { useState } from "react";
 
-function StockOutForm({ variants, onSubmit }) {
+function StockOutForm({ variants, onSubmit, loading }) {
   const [variantId, setVariantId] = useState("");
   const [quantity, setQuantity] = useState("");
   const [notes, setNotes] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!variantId || Number(quantity) <= 0) return;
 
     onSubmit({
       variantId,
@@ -71,8 +73,8 @@ function StockOutForm({ variants, onSubmit }) {
       </div>
 
       <div className="form-actions">
-        <button type="submit" className="btn btn-danger">
-          Remove Stock
+        <button type="submit" className="btn btn-danger" disabled={loading}>
+          {loading ? "Removing..." : "Remove Stock"}
         </button>
       </div>
     </form>

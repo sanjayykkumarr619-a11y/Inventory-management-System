@@ -1,4 +1,6 @@
 function CategoryTable({ categories, onDelete, onEdit }) {
+  const showActions = Boolean(onEdit || onDelete);
+
   return (
     <div className="table-wrapper">
       <table className="table-modern">
@@ -6,7 +8,7 @@ function CategoryTable({ categories, onDelete, onEdit }) {
           <tr>
             <th>Name</th>
             <th>Created At</th>
-            <th>Action</th>
+            {showActions && <th>Action</th>}
           </tr>
         </thead>
 
@@ -17,31 +19,29 @@ function CategoryTable({ categories, onDelete, onEdit }) {
 
               <td>{new Date(category.createdAt).toLocaleDateString()}</td>
 
-              <td>
-                <div className="action-buttons">
-                  <button
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => onEdit(category)}
-                  >
-                    Edit
-                  </button>
+              {showActions && (
+                <td>
+                  <div className="action-buttons">
+                    {onEdit && (
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => onEdit(category)}
+                      >
+                        Edit
+                      </button>
+                    )}
 
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => {
-                      const confirmed = window.confirm(
-                        `Are you sure you want to delete "${category.name}"?`
-                      );
-
-                      if (confirmed) {
-                        onDelete(category._id);
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
+                    {onDelete && (
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => onDelete(category)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

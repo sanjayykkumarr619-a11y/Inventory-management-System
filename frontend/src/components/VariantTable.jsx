@@ -1,16 +1,18 @@
-function VariantTable({ variants, onEdit, onDelete }) {
+function VariantTable({ variants, onEdit, onDelete, showProduct = true }) {
+  const showActions = Boolean(onEdit || onDelete);
+
   return (
     <div className="table-wrapper">
       <table className="table-modern">
         <thead>
           <tr>
             <th>SKU</th>
-            <th>Product</th>
+            {showProduct && <th>Product</th>}
             <th>Color</th>
             <th>Size</th>
             <th>Price</th>
             <th>Stock</th>
-            <th>Action</th>
+            {showActions && <th>Action</th>}
           </tr>
         </thead>
 
@@ -19,13 +21,13 @@ function VariantTable({ variants, onEdit, onDelete }) {
             <tr key={variant._id}>
               <td>{variant.sku}</td>
 
-              <td>{variant.productId?.name}</td>
+              {showProduct && <td>{variant.productId?.name}</td>}
 
               <td>{variant.color}</td>
 
               <td>{variant.size}</td>
 
-              <td>₹ {variant.price}</td>
+              <td>Rs. {variant.price}</td>
 
               <td>
                 <span className="badge badge-primary">
@@ -33,31 +35,29 @@ function VariantTable({ variants, onEdit, onDelete }) {
                 </span>
               </td>
 
-              <td>
-                <div className="action-buttons">
-                  <button
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => onEdit(variant)}
-                  >
-                    Edit
-                  </button>
+              {showActions && (
+                <td>
+                  <div className="action-buttons">
+                    {onEdit && (
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => onEdit(variant)}
+                      >
+                        Edit
+                      </button>
+                    )}
 
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => {
-                      const confirmed = window.confirm(
-                        `Delete "${variant.sku}"?`
-                      );
-
-                      if (confirmed) {
-                        onDelete(variant._id);
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
+                    {onDelete && (
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => onDelete(variant)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
